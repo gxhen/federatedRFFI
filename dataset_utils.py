@@ -195,3 +195,119 @@ def channel_ind_spectrogram(data, win_len = 64, crop_ratio = 0.3):
     data_out = np.expand_dims(data_out, axis=0)
 
     return data_out
+
+# class ChannelIndSpectrogram():
+#     def __init__(self,):
+#         pass
+    
+#     def _normalization(self,data):
+#         ''' Normalize the signal.'''
+#         s_norm = np.zeros(data.shape, dtype=complex)
+        
+#         for i in range(data.shape[0]):
+        
+#             sig_amplitude = np.abs(data[i])
+#             rms = np.sqrt(np.mean(sig_amplitude**2))
+#             s_norm[i] = data[i]/rms
+        
+#         return s_norm        
+
+#     def _spec_crop(self, x, crop_ratio):
+      
+#         num_row = x.shape[0]
+#         x_cropped = x[math.floor(num_row*crop_ratio):math.ceil(num_row*(1-crop_ratio))]
+
+#         return x_cropped
+
+#     def _gen_single_channel_ind_spectrogram(self, sig, win_len, crop_ratio=0.3):
+        
+#         sig = self._normalization(sig)
+#         overlap = round(0.5*win_len)
+
+#         f, t, spec = signal.stft(sig[0], 
+#                                 window='boxcar', 
+#                                 nperseg= win_len, 
+#                                 noverlap= overlap, 
+#                                 nfft= win_len,
+#                                 return_onesided=False, 
+#                                 padded = False, 
+#                                 boundary = None)
+        
+#         # spec = spec_shift(spec)
+#         spec = np.fft.fftshift(spec, axes=0)
+#         # spec = spec_crop(spec, crop_ratio)
+#         spec = spec + 1e-12
+        
+#         dspec = spec[:,1:]/spec[:,:-1]    
+                 
+#         dspec_amp = np.log10(np.abs(dspec)**2)
+#         # dspec_phase = np.angle(dspec)
+#         dspec_amp = self._spec_crop(dspec_amp, crop_ratio)
+        
+#         dspec_amp = np.expand_dims(dspec_amp, axis=0)
+
+#         return dspec_amp
+    
+
+    # def channel_ind_spectrogram(self, data, win_len = 64, crop_ratio = 0):
+    #     data = self._normalization(data)
+        
+    #     # win_len = 16
+    #     overlap = 0.5
+        
+    #     num_sample = data.shape[0]
+    #     # num_row = math.ceil(win_len*(1-2*crop_ratio))
+    #     num_row = len(range(math.floor(win_len*crop_ratio),math.ceil(win_len*(1-crop_ratio))))
+    #     num_column = int(np.floor((data.shape[1]-win_len)/(win_len - round(overlap*win_len))) + 1) - 1
+        
+        
+    #     data_dspec = np.zeros([num_sample, 1, num_row, num_column,])
+    #     # data_dspec = []
+    #     for i in range(num_sample):
+                   
+    #         dspec_amp = self._gen_single_channel_ind_spectrogram(data[i], win_len, round(overlap*win_len))
+    #         dspec_amp = self._spec_crop(dspec_amp, crop_ratio)
+    #         data_dspec[i,0,:,:] = dspec_amp
+    #         # data_dspec[i,:,:,1] = dspec_phase
+            
+    #     return data_dspec   
+
+    # def multi_resolution_spec(self, data, args, crop_ratio = 0.3):
+    #     data = self._normalization(data)
+    #     num_sample = data.shape[0]
+
+    #     # win_len = 16
+    #     overlap = 0.5
+    #     # win_len_group = [64, 128, 256]
+        
+    #     data_dspec_group = []
+    #     for win_len in args.wingroup:
+            
+    #         # num_row = math.ceil(win_len*(1-2*crop_ratio))
+    #         num_row = len(range(math.floor(win_len*crop_ratio),math.ceil(win_len*(1-crop_ratio))))
+    #         num_column = int(np.floor((data.shape[1]-win_len)/(win_len - round(overlap*win_len))) + 1) - 1
+            
+            
+    #         data_dspec = np.zeros([num_sample, 1, num_row, num_column,])
+    #         # data_dspec = []
+    #         for i in range(num_sample):
+                    
+    #             dspec_amp = self._gen_single_channel_ind_spectrogram(data[i], win_len, round(overlap*win_len))
+    #             dspec_amp = self._spec_crop(dspec_amp, crop_ratio)
+    #             data_dspec[i,0,:,:] = dspec_amp
+    #             # data_dspec[i,:,:,1] = dspec_phase
+
+    #         data_dspec_group.append(data_dspec)
+
+    #     return data_dspec_group
+
+    # def view_spec(self, input_spec):
+    #     # plt.figure()
+    #     # plt.imshow(input_spec, cmap='jet', origin='lower')
+    #     # plt.show(block=True)
+
+    #     # cmap 'Blues' default
+    #     plt.figure()
+    #     sns.heatmap(input_spec[0, 0, :, :], cmap='crest', cbar=False,
+    #                 xticklabels=False, yticklabels=False, ).invert_yaxis()
+    #     plt.savefig('spectrogram.pdf', bbox_inches='tight')

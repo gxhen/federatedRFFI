@@ -11,6 +11,7 @@ import time
 def args_parser():
     parser = argparse.ArgumentParser()
 
+    parser.add_argument('--mode', type = str, default='federated', help='federated or centralized training')
     parser.add_argument('--r', type=int, default=5, help='number of communication rounds')
     parser.add_argument('--K', type=int, default=4, help='number of total clients')
     parser.add_argument('--B', type=int, default=128, help='local batch size')
@@ -30,6 +31,8 @@ class FedTrain:
         self.clf_clients = []
         for i in range(self.args.K):
             temp = copy.deepcopy(self.nn_server)
+            # clients = ['AP_' + str(i) for i in range(1, 4)]
+            # temp.name = self.args.clients[i]
             temp.name = 'client_' + str(i+1)
             self.nn_clients.append(temp)
 
@@ -103,7 +106,7 @@ class FedTrain:
             #     self.clf_clients.append(clf_client)
             # else:
             #     clf_client = self.clf_clients[k]
-            method = 'supervised'
+            method = 'unsupervised'
 
             if method == 'unsupervised':
                 print('Start unsupervised training.')
@@ -170,19 +173,17 @@ if __name__ == '__main__':
 
     args = args_parser()
 
-    method = 'federated'  # 'federated' or 'centralized'
-
-    if method == 'federated':
+    if args.mode == 'federated':
         fedTrain = FedTrain(args)
         nn_server = fedTrain.server()
-    elif method == 'centralized':
+
+    elif args.mode == 'centralized':
         CenTrain = CenTrain(args)
         dataset_path = [
-                        './fed_rffi_dataset/client_1_train.h5',
-                        './fed_rffi_dataset/client_2_train.h5',
-                        './fed_rffi_dataset/client_3_train.h5',
-                        './fed_rffi_dataset/client_4_train.h5'
+                        './dataset/train/client_1_train.h5',
+                        './dataset/train/client_2_train.h5',
+                        './dataset/train/client_3_train.h5',
+                        './dataset/train/client_4_train.h5'
                         ]
-        
         nn_cen_train = CenTrain.start_train(dataset_path)
         torch.save(nn_cen_train.state_dict(), './model/nn_central.pth')

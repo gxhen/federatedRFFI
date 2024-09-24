@@ -183,7 +183,7 @@ def client_train_supervised(args, model, data_train, data_valid, label_train, la
         training_running_loss = 0.0
         training_running_correct = 0
 
-        for iteration, (inputs, labels) in enumerate(train_generator):
+        for iteration, (inputs, labels) in enumerate(tqdm(train_generator)):
 
             inputs = inputs.to(args.device)
             labels = labels.to(args.device)
